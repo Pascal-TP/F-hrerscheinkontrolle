@@ -263,28 +263,6 @@ th {
   color: var(--primary);
 }
 
-@media print {
-  body {
-    background: white;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .qr-preview,
-  .qr-preview * {
-    visibility: visible;
-  }
-
-  .qr-preview {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    border: none;
-  }
-}
-
 @media (max-width: 760px) {
   .grid {
     grid-template-columns: 1fr;
