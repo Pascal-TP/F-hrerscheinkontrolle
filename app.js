@@ -25,13 +25,13 @@ import {
    1. FIREBASE CONFIG EINTRAGEN
    ========================================================= */
 const firebaseConfig = {
-  apiKey: "AIzaSyCcHI5sGR7sFwrWRpo2uQ3Plm0HpTvqr30",
-  authDomain: "kalkpro-4cc29.firebaseapp.com",
-  projectId: "kalkpro-4cc29",
-  storageBucket: "kalkpro-4cc29.firebasestorage.app",
-  messagingSenderId: "185447466021",
-  appId: "1:185447466021:web:0100c61f56ca4e69b52bcc",
-  measurementId: "G-MSK334G61R"
+  apiKey: "AIzaSyDlxLnHCi0GXJkMn0J-2Jy1S-5CKs0M85s",
+  authDomain: "excel-entfernung-488712.firebaseapp.com",
+  projectId: "excel-entfernung-488712",
+  storageBucket: "excel-entfernung-488712.firebasestorage.app",
+  messagingSenderId: "338667062868",
+  appId: "1:338667062868:web:b20d82d7fecc1d55368fc1",
+  measurementId: "G-449YH2BBZJ"
 };
 
 const app = initializeApp(firebaseConfig);
