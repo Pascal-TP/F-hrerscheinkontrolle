@@ -283,3 +283,9 @@ th {
     padding: 20px;
   }
 }
+
+#qr-reader {
+  width: 100%;
+  border-radius: 12px;
+  background: #000;
+}
