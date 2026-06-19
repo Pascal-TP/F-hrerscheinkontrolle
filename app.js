@@ -69,7 +69,6 @@ const pinMessage = document.getElementById("pinMessage");
 const qrPinSelect = document.getElementById("qrPinSelect");
 const qrCanvas = document.getElementById("qrCanvas");
 const qrLabel = document.getElementById("qrLabel");
-const createQrBtn = document.getElementById("createQrBtn");
 
 const pinTableBody = document.getElementById("pinTableBody");
 const downloadCsvBtn = document.getElementById("downloadCsvBtn");
@@ -365,11 +364,6 @@ function createQrPreview() {
 
   document.getElementById("qrLabel").textContent = `PIN: ${selectedPin}`;
 }
-
-createQrBtn.addEventListener("click", () => {
-  createQrPreview();
-});
-
 
 /* =========================================================
    8. CSV DOWNLOAD
