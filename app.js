@@ -73,7 +73,7 @@ const qrLabel = document.getElementById("qrLabel");
 const pinTableBody = document.getElementById("pinTableBody");
 const downloadCsvBtn = document.getElementById("downloadCsvBtn");
 
-let html5QrCode = null;
+let codeReader = null;
 let cachedPins = [];
 
 /* =========================================================
@@ -141,54 +141,46 @@ startScanBtn.addEventListener("click", async () => {
 
   scannerBox.classList.remove("hidden");
 
-  if (!html5QrCode) {
-    html5QrCode = new Html5Qrcode("qr-reader");
+try {
+  if (!codeReader) {
+    codeReader = new ZXing.BrowserMultiFormatReader();
   }
 
-  try {
-    await html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 230, height: 230 } },
-      async (decodedText) => {
-        const scannedPin = normalizePin(decodedText);
+  await codeReader.decodeFromVideoDevice(null, "qr-reader", async (result) => {
+    if (!result) return;
 
-        if (scannedPin !== enteredPin) {
-          showMessage(employeeMessage, "Der gescannte QR-Code passt nicht zur eingegebenen PIN.", "error");
-          return;
-        }
+    const scannedPin = normalizePin(result.getText());
 
-        await html5QrCode.stop();
-        scannerBox.classList.add("hidden");
+    if (scannedPin !== enteredPin) {
+      showMessage(employeeMessage, "Der gescannte Code passt nicht zur eingegebenen PIN.", "error");
+      return;
+    }
 
-        await updateDoc(pinRef, {
-          lastCheckAt: serverTimestamp(),
-          checkCount: (pinSnap.data().checkCount || 0) + 1,
-          checks: arrayUnion({
-            checkedAt: new Date().toISOString()
-          })
-        });
+    codeReader.reset();
+    scannerBox.classList.add("hidden");
 
-        pinInput.value = "";
-        showMessage(employeeMessage, "Vielen Dank. Die Führerscheinkontrolle wurde erfolgreich bestätigt.", "success");
-      },
-      () => {
-        // Scan-Fehler während laufender Kamera ignorieren
-      }
-    );
-  } catch (error) {
-    console.error(error);
-    showMessage(employeeMessage, "Die Kamera konnte nicht geöffnet werden. Bitte Kamerazugriff erlauben.", "error");
-  }
+    await updateDoc(pinRef, {
+      lastCheckAt: serverTimestamp(),
+      checkCount: (pinSnap.data().checkCount || 0) + 1,
+      checks: arrayUnion({
+        checkedAt: new Date().toISOString()
+      })
+    });
+
+    pinInput.value = "";
+    showMessage(employeeMessage, "Vielen Dank. Die Führerscheinkontrolle wurde erfolgreich bestätigt.", "success");
+  });
+} catch (error) {
+  console.error(error);
+  showMessage(employeeMessage, "Die Kamera konnte nicht geöffnet werden. Bitte Kamerazugriff erlauben.", "error");
+}
 });
 
 cancelScanBtn.addEventListener("click", async () => {
-  if (html5QrCode) {
-    try {
-      await html5QrCode.stop();
-    } catch (error) {
-      console.warn(error);
-    }
+  if (codeReader) {
+    codeReader.reset();
   }
+
   scannerBox.classList.add("hidden");
 });
 
@@ -341,25 +333,27 @@ function createQrPreview() {
 
   if (!selectedPin) {
     qrLabel.textContent = "Keine PIN ausgewählt";
-    qrCanvas.innerHTML = "";
     return;
   }
 
-  if (typeof QRCode === "undefined") {
-    qrLabel.textContent = "QR-Code-Bibliothek wurde nicht geladen.";
+  if (typeof bwipjs === "undefined") {
+    qrLabel.textContent = "Code-Bibliothek wurde nicht geladen.";
     return;
   }
 
   const qrContainer = document.querySelector(".qr-preview");
   qrContainer.innerHTML = `
-    <div id="qrCanvas"></div>
+    <canvas id="qrCanvas"></canvas>
     <div id="qrLabel" class="qr-label"></div>
   `;
 
-  new QRCode(document.getElementById("qrCanvas"), {
+  bwipjs.toCanvas("qrCanvas", {
+    bcid: "datamatrix",
     text: selectedPin,
-    width: 180,
-    height: 180
+    scale: 6,
+    paddingwidth: 0,
+    paddingheight: 0,
+    includetext: false
   });
 
   document.getElementById("qrLabel").textContent = `PIN: ${selectedPin}`;
