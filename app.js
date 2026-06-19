@@ -344,10 +344,15 @@ createQrBtn.addEventListener("click", () => {
 function createQrPreview() {
   const selectedPin = qrPinSelect.value;
 
-  if (!selectedPin || !window.QRCode) {
+  if (!selectedPin) {
     qrLabel.textContent = "Keine PIN ausgewählt";
     const ctx = qrCanvas.getContext("2d");
     ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
+    return;
+  }
+
+  if (!window.QRCode) {
+    qrLabel.textContent = "QR-Code-Bibliothek wurde nicht geladen.";
     return;
   }
 
@@ -359,6 +364,9 @@ function createQrPreview() {
   qrLabel.textContent = `PIN: ${selectedPin}`;
 }
 
+createQrBtn.addEventListener("click", () => {
+  createQrPreview();
+});
 
 
 /* =========================================================
