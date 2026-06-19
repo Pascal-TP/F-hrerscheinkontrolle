@@ -13,6 +13,7 @@ import {
   setDoc,
   getDoc,
   updateDoc,
+  deleteDoc,
   collection,
   getDocs,
   serverTimestamp,
@@ -302,11 +303,27 @@ async function loadPins() {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${data.pin}</td>
-      <td>${formatDate(data.lastCheckAt)}</td>
-      <td>${data.checkCount || 0}</td>
-      <td>${formatDate(data.createdAt)}</td>
-    `;
+  <td>${data.pin}</td>
+  <td>${formatDate(data.lastCheckAt)}</td>
+  <td>${data.checkCount || 0}</td>
+  <td>${formatDate(data.createdAt)}</td>
+  <td></td>
+`;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Löschen";
+    deleteBtn.className = "secondary-btn";
+    deleteBtn.style.marginTop = "0";
+
+    deleteBtn.addEventListener("click", async () => {
+      const ok = confirm(`Soll die PIN ${data.pin} wirklich gelöscht werden?`);
+      if (!ok) return;
+
+      await deleteDoc(doc(db, "licensePins", data.pin));
+      await loadPins();
+    });
+
+    tr.children[4].appendChild(deleteBtn);
     pinTableBody.appendChild(tr);
 
     const option = document.createElement("option");
@@ -319,6 +336,10 @@ async function loadPins() {
 }
 
 qrPinSelect.addEventListener("change", createQrPreview);
+
+createQrBtn.addEventListener("click", () => {
+  createQrPreview();
+});
 
 function createQrPreview() {
   const selectedPin = qrPinSelect.value;
