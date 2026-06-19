@@ -337,31 +337,33 @@ async function loadPins() {
 
 qrPinSelect.addEventListener("change", createQrPreview);
 
-createQrBtn.addEventListener("click", () => {
-  createQrPreview();
-});
-
 function createQrPreview() {
   const selectedPin = qrPinSelect.value;
 
   if (!selectedPin) {
     qrLabel.textContent = "Keine PIN ausgewählt";
-    const ctx = qrCanvas.getContext("2d");
-    ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
+    qrCanvas.innerHTML = "";
     return;
   }
 
-  if (!window.QRCode) {
+  if (typeof QRCode === "undefined") {
     qrLabel.textContent = "QR-Code-Bibliothek wurde nicht geladen.";
     return;
   }
 
-  QRCode.toCanvas(qrCanvas, selectedPin, {
+  const qrContainer = document.querySelector(".qr-preview");
+  qrContainer.innerHTML = `
+    <div id="qrCanvas"></div>
+    <div id="qrLabel" class="qr-label"></div>
+  `;
+
+  new QRCode(document.getElementById("qrCanvas"), {
+    text: selectedPin,
     width: 180,
-    margin: 1
+    height: 180
   });
 
-  qrLabel.textContent = `PIN: ${selectedPin}`;
+  document.getElementById("qrLabel").textContent = `PIN: ${selectedPin}`;
 }
 
 createQrBtn.addEventListener("click", () => {
