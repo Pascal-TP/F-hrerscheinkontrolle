@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Führerscheinkontrolle</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- QR-Code Scanner -->
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+
+  <!-- QR-Code Erstellung für Aufkleber -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" defer></script>
+
+  <!-- Firebase -->
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- MITARBEITER-BEREICH -->
+    <main id="employee-view" class="card">
+      <img src="logo.png" alt="Firmenlogo" class="logo" onerror="this.style.display='none'" />
+
+      <h1>Führerscheinkontrolle</h1>
+      <p class="hint">
+        Bitte geben Sie Ihre PIN ein und scannen Sie anschließend den QR-Code auf Ihrem Führerschein.
+      </p>
+
+      <label for="pinInput">PIN:</label>
+      <input id="pinInput" type="text" maxlength="5" inputmode="numeric" placeholder="5-stellige PIN" />
+
+      <button id="startScanBtn" class="primary-btn">QR-Code scannen</button>
+
+      <div id="scannerBox" class="scanner-box hidden">
+        <div id="qr-reader"></div>
+        <button id="cancelScanBtn" class="secondary-btn">Scan abbrechen</button>
+      </div>
+
+      <div id="employeeMessage" class="message hidden"></div>
+
+      <button id="showManagerLoginBtn" class="link-btn">Login Fuhrparkmanager</button>
+    </main>
+
+    <!-- LOGIN FUHRPARKMANAGER -->
+    <section id="manager-login-view" class="card hidden">
+      <img src="logo.png" alt="Firmenlogo" class="logo" onerror="this.style.display='none'" />
+
+      <h1>Login Fuhrparkmanager</h1>
+
+      <label for="managerEmail">E-Mail:</label>
+      <input id="managerEmail" type="email" placeholder="E-Mail-Adresse" />
+
+      <label for="managerPassword">Passwort:</label>
+      <input id="managerPassword" type="password" placeholder="Passwort" />
+
+      <button id="managerLoginBtn" class="primary-btn">Einloggen</button>
+      <button id="forgotPasswordBtn" class="secondary-btn">Passwort vergessen</button>
+      <button id="backToEmployeeBtn" class="link-btn">Zurück zur Prüfung</button>
+
+      <div id="loginMessage" class="message hidden"></div>
+    </section>
+
+    <!-- ADMIN / FUHRPARKMANAGER -->
+    <section id="manager-view" class="wide-card hidden">
+      <div class="topbar">
+        <div>
+          <h1>Fuhrparkmanager</h1>
+          <p class="hint">PINs anlegen, QR-Codes drucken und Prüfliste herunterladen.</p>
+        </div>
+        <button id="logoutBtn" class="secondary-btn">Logout</button>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <h2>Neue PIN anlegen</h2>
+          <label for="newPinInput">PIN:</label>
+          <input id="newPinInput" type="text" maxlength="5" inputmode="numeric" placeholder="z. B. 12345" />
+          <button id="createPinBtn" class="primary-btn">PIN anlegen</button>
+          <div id="pinMessage" class="message hidden"></div>
+        </div>
+
+        <div class="panel">
+          <h2>QR-Code für Aufkleber</h2>
+          <label for="qrPinSelect">PIN auswählen:</label>
+          <select id="qrPinSelect"></select>
+
+          <div class="qr-preview">
+            <canvas id="qrCanvas"></canvas>
+            <div id="qrLabel" class="qr-label"></div>
+          </div>
+
+          <button id="printQrBtn" class="secondary-btn">QR-Code drucken</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="table-head">
+          <h2>Prüfliste</h2>
+          <button id="downloadCsvBtn" class="primary-btn">Liste herunterladen</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PIN</th>
+                <th>Letzte Prüfung</th>
+                <th>Anzahl Prüfungen</th>
+                <th>Erstellt am</th>
+              </tr>
+            </thead>
+            <tbody id="pinTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
