@@ -62,6 +62,7 @@ const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
 const loginMessage = document.getElementById("loginMessage");
 
 const logoutBtn = document.getElementById("logoutBtn");
+const helpBtn = document.getElementById("helpBtn");
 const newPinInput = document.getElementById("newPinInput");
 const createPinBtn = document.getElementById("createPinBtn");
 const pinMessage = document.getElementById("pinMessage");
@@ -224,6 +225,10 @@ forgotPasswordBtn.addEventListener("click", async () => {
     console.error(error);
     showMessage(loginMessage, "Die Passwort-E-Mail konnte nicht versendet werden.", "error");
   }
+});
+
+helpBtn.addEventListener("click", () => {
+  window.open("Bedienungsanleitung_Fuehrerscheinkontrolle.pdf", "_blank", "noopener");
 });
 
 logoutBtn.addEventListener("click", async () => {
